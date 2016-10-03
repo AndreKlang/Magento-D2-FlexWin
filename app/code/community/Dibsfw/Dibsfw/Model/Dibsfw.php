@@ -39,6 +39,7 @@ class Dibsfw_Dibsfw_Model_Dibsfw extends dibs_fw_api {
     }
     
     public function getCheckoutFormFields() {
+        /** @var Mage_Sales_Model_Order $order */
         $order = Mage::getModel('sales/order');
         $order->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId());
         $aFields = $this->dibsflex_api_requestModel($order);
@@ -65,7 +66,8 @@ class Dibsfw_Dibsfw_Model_Dibsfw extends dibs_fw_api {
             ->addFieldToFilter('updated_at', array('lt' => $timeout))
             ->addFieldToFilter('status', array('eq' => Mage_Sales_Model_Order::STATE_PENDING_PAYMENT))
             ->setPageSize(25);
-        
+
+        /** @var Mage_Sales_Model_Order $order */
         foreach ($orders as $order) {
             $order->cancel()->save();
         }
@@ -90,7 +92,7 @@ class Dibsfw_Dibsfw_Model_Dibsfw extends dibs_fw_api {
                 $errorMsg = $this->_getHelper()->__("Error in curl request: ".$result['message']);
             break;
        }
-       if($errorMsg){
+       if(isset($errorMsg) && $errorMsg){
            Mage::throwException($errorMsg);
        }
         return $this;
@@ -110,7 +112,7 @@ class Dibsfw_Dibsfw_Model_Dibsfw extends dibs_fw_api {
                 $errorMsg = $this->_getHelper()->__("Error in curl request: ".$result['message']);
             break;
        }
-       if($errorMsg){
+       if(isset($errorMsg) && $errorMsg){
            Mage::throwException($errorMsg);
        }
        return $this;

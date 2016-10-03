@@ -26,6 +26,8 @@
 
 class Dibsfw_Dibsfw_DibsfwController extends Mage_Core_Controller_Front_Action {
     protected $_order;
+
+    /** @var  Dibsfw_Dibsfw_Model_Dibsfw */
     private $oDibsModel;
     
     function _construct() {
@@ -37,6 +39,7 @@ class Dibsfw_Dibsfw_DibsfwController extends Mage_Core_Controller_Front_Action {
       $session = Mage::getSingleton('checkout/session');
       $session->setDibsfwQuoteId($session->getQuoteId());
 
+        /** @var Mage_Sales_Model_Order $oOrder */
         $oOrder = Mage::getModel('sales/order');
         $oOrder->loadByIncrementId($session->getLastRealOrderId());
         $this->loadLayout();
@@ -99,6 +102,7 @@ class Dibsfw_Dibsfw_DibsfwController extends Mage_Core_Controller_Front_Action {
     }
 
     public function callbackAction() {
+        /** @var Mage_Sales_Model_Order $oOrder */
         $oOrder = Mage::getModel('sales/order');
         $this->oDibsModel->dibsflex_api_callback($oOrder);
     }
@@ -112,6 +116,7 @@ class Dibsfw_Dibsfw_DibsfwController extends Mage_Core_Controller_Front_Action {
 	$fields = array();
 
         // Save order comment
+        /** @var Mage_Sales_Model_Order $oOrder */
       	$oOrder = Mage::getModel('sales/order');
 		
 	if (isset($_POST['orderid'])) {
@@ -149,6 +154,7 @@ class Dibsfw_Dibsfw_DibsfwController extends Mage_Core_Controller_Front_Action {
       	$session = Mage::getSingleton('checkout/session');
       	$session->setDibsfwStandardQuoteId($session->getQuoteId());
 
+        /** @var Mage_Sales_Model_Order $oOrder */
         $oOrder = Mage::getModel('sales/order');
         $oOrder->loadByIncrementId($session->getLastRealOrderId());
       
@@ -162,10 +168,12 @@ class Dibsfw_Dibsfw_DibsfwController extends Mage_Core_Controller_Front_Action {
                 /* Put the stock back on, we don't want it taken off yet */
                 $items = $oOrder->getAllItems(); // Get all items from the order
                 if ($items) {
+                    /** @var Mage_Sales_Model_Order_Item $item */
                     foreach($items as $item) {
                         $quantity = $item->getQtyOrdered(); // get Qty ordered
                         $product_id = $item->getProductId(); // get it's ID
                         // Load the stock for this product
+                        /** @var Mage_CatalogInventory_Model_Stock_Item $stock */
                         $stock = Mage::getModel('cataloginventory/stock_item')
                                  ->loadByProduct($product_id);
                         $stock->setQty($stock->getQty()+$quantity); // Set to new Qty            
